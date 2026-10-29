@@ -18,7 +18,7 @@
   },
   "adminBot": [
     "100014754734049",
-    "61552591230081"
+    "61595952933117"
   ],
   "vip": [
     "100014754734049",
@@ -29,8 +29,8 @@
     "whiteListIds": [100014754734049],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "nickNameBot": "🪽🐰 Your Baby🔥🩷",
-  "prefix": "!",
+  "nickNameBot": "✨🍀Ω.Ｊᴀʏᴅᴇɴ.命༘🍀✨",
+  "prefix": "¥",
   "api": "https://mahabub-apis.fun",
   "database": {
     "type": "mongodb",
