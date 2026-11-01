@@ -1,93 +1,143 @@
-const axios = require('axios');
-const moment = require('moment-timezone');
+
+const axios = require("axios");
+const moment = require("moment-timezone");
 
 module.exports = {
     config: {
         name: "info",
         aliases: ["inf", "in4"],
-        version: "2.6",
-        author: "MR᭄﹅ MAHABUB﹅ メꪜ",
+        version: "3.0",
+        author: "Dark",
         countDown: 5,
         role: 0,
-        shortDescription: { en: "Sends bot and admin info." },
-        longDescription: { en: "Sends bot and admin info along with a random video from the API." },
+        shortDescription: {
+            fr: "Informations du bot et de son propriétaire."
+        },
+        longDescription: {
+            fr: "Affiche les informations du bot, de son propriétaire et son statut."
+        },
         category: "Information",
-        guide: { en: "{pn}" }
+        guide: {
+            fr: "{pn}"
+        }
     },
 
     onStart: async function ({ message }) {
-        this.sendInfo(message);
+        return this.sendInfo(message);
     },
 
     onChat: async function ({ event, message }) {
-        if (event.body && event.body.trim().toLowerCase() === "info") {
-            this.sendInfo(message);
+        if (
+            event.body &&
+            event.body.trim().toLowerCase() === "info"
+        ) {
+            return this.sendInfo(message);
         }
     },
 
     sendInfo: async function (message) {
-        message.reply("𝑾𝒂𝒊𝒕 𝒃𝒂𝒃𝒚... 𝑳𝒐𝒂𝒅𝒊𝒏𝒈 𝒂𝒖𝒕𝒉𝒐𝒓 𝒊𝒏𝒇𝒐 😘").then(async (waitMsg) => {
-            setTimeout(() => {
+        const waitMsg = await message.reply(
+            "🖤 𝑰𝒏𝒊𝒕𝒊𝒂𝒍𝒊𝒔𝒂𝒕𝒊𝒐𝒏 𝒅𝒖 𝑫𝑨𝑹𝑲 𝑺𝒀𝑺𝑻𝑬𝑴... 🦇"
+        );
+
+        setTimeout(() => {
+            if (waitMsg?.messageID) {
                 message.unsend(waitMsg.messageID);
-            }, 4000);
-
-            const botName = "𝑴𝑨𝑯𝑨𝑩𝑼𝑩-𝑩𝑶𝑻";
-            const botPrefix = `${global.GoatBot.config.prefix}`;
-            const authorName = "𝑴𝑨𝑯𝑨𝑩𝑼𝑩 𝑹𝑨𝑯𝑴𝑨𝑵";
-            const authorFB = "https://www.facebook.com/www.xnxx.com140";
-            const authorInsta = "@mahabub_rahman_404";
-            const status = "𝑺𝑰𝑵𝑮𝑳𝑬..!";
-
-            const now = moment().tz('Asia/Dhaka');
-            const date = now.format('dddd, MMMM Do YYYY');
-            const time = now.format('h:mm:ss A');
-
-            const uptime = process.uptime();
-            const seconds = Math.floor(uptime % 60);
-            const minutes = Math.floor((uptime / 60) % 60);
-            const hours = Math.floor((uptime / (60 * 60)) % 24);
-            const days = Math.floor(uptime / (60 * 60 * 24));
-            const uptimeString = `${days}d ${hours}h ${minutes}m ${seconds}s`.replace(/^0d 0h /, "");
-
-            try {
-                const videoResponse = await axios.get("https://mahabub-apis.vercel.app/info");
-                if (!videoResponse.data || !videoResponse.data.data) {
-                    throw new Error("Invalid video API response.");
-                }
-
-                let videoUrl = videoResponse.data.data;
-
-                if (videoUrl.includes("drive.google.com")) {
-                    const match = videoUrl.match(/[-\w]{25,}/);
-                    if (match) {
-                        videoUrl = `https://drive.google.com/uc?id=${match[0]}`;
-                    }
-                }
-
-                message.reply({
-                    body:
-`╭─╼━━━[ 🌟 𝑩𝑶𝑻 & 𝑨𝑼𝑻𝑯𝑶𝑹 𝑰𝑵𝑭𝑶 🌟 ]━━━╾─╮
-┃
-┃ 👤 𝑶𝒘𝒏𝒆𝒓: ${authorName}
-┃ 🤖 𝑩𝒐𝒕 𝑵𝒂𝒎𝒆: ${botName}
-┃ 🔰 𝑷𝒓𝒆𝒇𝒊𝒙: ${botPrefix}
-┃ ❤ 𝑹𝒆𝒍𝒂𝒕𝒊𝒐𝒏: ${status}
-┃
-┃ 📆 𝑫𝒂𝒕𝒆: ${date}
-┃ ⏰ 𝑻𝒊𝒎𝒆: ${time}
-┃ ⚙ 𝑼𝒑𝒕𝒊𝒎𝒆: ${uptimeString}
-┃
-┃ 🌐 𝑭𝒂𝒄𝒆𝒃𝒐𝒐𝒌: ${authorFB}
-┃ 📸 𝑰𝒏𝒔𝒕𝒂: ${authorInsta}
-┃
-╰─╼━━━━━━━━━━━━━━━━━━━━━━━━━━━━╾─╯`,
-                    attachment: await global.utils.getStreamFromURL(videoUrl)
-                });
-
-            } catch (error) {
-                console.error("Error fetching video:", error);
-                message.reply("❌ 𝑬𝒓𝒓𝒐𝒓 𝒇𝒆𝒕𝒄𝒉𝒊𝒏𝒈 𝒗𝒊𝒅𝒆𝒐. 𝑷𝒍𝒆𝒂𝒔𝒆 𝒕𝒓𝒚 𝒂𝒈𝒂𝒊𝒏 𝒍𝒂𝒕𝒆𝒓.");
             }
-        });
+        }, 4000);
+
+        const botName = "ヾΩ.Ꭰꪖꪹӄ 命༘";
+        const botPrefix = global.GoatBot.config.prefix || "¥";
+
+        const authorName = "ヾΩ.Ꭰꪖꪹӄ 命༘";
+        const authorFB = "À AJOUTER";
+        const authorInsta = "À AJOUTER";
+        const status = "À PERSONNALISER";
+
+        const now = moment().tz("Indian/Antananarivo");
+        const date = now.format("DD/MM/YYYY");
+        const time = now.format("HH:mm:ss");
+
+        const uptime = process.uptime();
+
+        const seconds = Math.floor(uptime % 60);
+        const minutes = Math.floor((uptime / 60) % 60);
+        const hours = Math.floor((uptime / 3600) % 24);
+        const days = Math.floor(uptime / 86400);
+
+        const uptimeString =
+            `${days}j ${hours}h ${minutes}m ${seconds}s`;
+
+        try {
+            const videoResponse = await axios.get(
+                "https://mahabub-apis.vercel.app/info",
+                { timeout: 15000 }
+            );
+
+            if (
+                !videoResponse.data ||
+                !videoResponse.data.data
+            ) {
+                throw new Error("API vidéo indisponible");
+            }
+
+            let videoUrl = videoResponse.data.data;
+
+            if (videoUrl.includes("drive.google.com")) {
+                const match = videoUrl.match(/[-\w]{25,}/);
+
+                if (match) {
+                    videoUrl =
+                        `https://drive.google.com/uc?id=${match[0]}`;
+                }
+            }
+
+            const attachment =
+                await global.utils.getStreamFromURL(videoUrl);
+
+            return message.reply({
+                body:
+`╔════════════════════════════════╗
+       🦇 𝑲&𝑨 𝑫𝑨𝑹𝑲 𝑺𝒀𝑺𝑻𝑬𝑴 🦇
+╚════════════════════════════════╝
+
+       𓆩 🖤 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎 🖤 𓆪
+
+👑 𝐏𝐫𝐨𝐩𝐫𝐢𝐞́𝐭𝐚𝐢𝐫𝐞 : ${authorName}
+🤖 𝐍𝐨𝐦 𝐝𝐮 𝐛𝐨𝐭 : ${botName}
+🔰 𝐏𝐫𝐞́𝐟𝐢𝐱 : ${botPrefix}
+⚙️ 𝐕𝐞𝐫𝐬𝐢𝐨𝐧 : 3.0.0
+🩸 𝐒𝐭𝐚𝐭𝐮𝐭 : 𝐎𝐍𝐋𝐈𝐍𝐄
+
+       𓆩 ⚜️ 𝐒𝐘𝐒𝐓𝐄𝐌 𝐈𝐍𝐅𝐎 ⚜️ 𓆪
+
+📅 𝐃𝐚𝐭𝐞 : ${date}
+⏰ 𝐇𝐞𝐮𝐫𝐞 : ${time}
+⏳ 𝐔𝐩𝐭𝐢𝐦𝐞 : ${uptimeString}
+
+       𓆩 🌐 𝐒𝐎𝐂𝐈𝐀𝐋 𝐈𝐍𝐅𝐎 🌐 𓆪
+
+📘 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 : ${authorFB}
+📸 𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 : ${authorInsta}
+❤️ 𝐒𝐭𝐚𝐭𝐮𝐭 : ${status}
+
+╔════════════════════════════════╗
+       🩸 𝐓𝐇𝐄 𝐒𝐇𝐀𝐃𝐎𝐖 𝐍𝐄𝐕𝐄𝐑 𝐒𝐋𝐄𝐄𝐏𝐒
+╚════════════════════════════════╝`,
+                attachment
+            });
+
+        } catch (error) {
+            console.error("Erreur INFO :", error);
+
+            return message.reply(
+                `🖤 𝗞&𝗔 𝗗𝗔𝗥𝗞 𝗦𝗬𝗦𝗧𝗘𝗠\n\n` +
+                `👑 Propriétaire : ${authorName}\n` +
+                `🤖 Bot : ${botName}\n` +
+                `🔰 Préfixe : ${botPrefix}\n` +
+                `⏳ Uptime : ${uptimeString}\n\n` +
+                `⚠️ La vidéo est momentanément indisponible.`
+            );
+        }
     }
 };
